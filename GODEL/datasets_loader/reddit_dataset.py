@@ -50,9 +50,9 @@ class RedditPretrain(datasets.GeneratorBasedBuilder):
         )
 
     def _split_generators(self, dl_manager):
-        train_path = '../data/reddit.jsonl'
-        validation_path = '../data/reddit.jsonl'
-        test_path = '../data/reddit.jsonl'
+        train_path = '/workspace/GODEL/data/reddit.jsonl'
+        validation_path = '/workspace/GODEL/data/reddit.jsonl'
+        test_path = '/workspace/GODEL/data/reddit.jsonl'
 
         return [
             datasets.SplitGenerator(name=datasets.Split.TRAIN, gen_kwargs={
