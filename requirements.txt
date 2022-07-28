@@ -9,7 +9,7 @@ python-dotenv==0.20.0
 rouge_score==0.0.4
 six==1.16.0
 tqdm==4.64.0
-transformers=4.20.0
+transformers==4.20.0
 wandb==0.12.11
 fire==0.4.0
 flask==2.0.2
