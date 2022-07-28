@@ -30,6 +30,7 @@ from transformers import (
     AdamW,
     AutoConfig,
     AutoModelForSeq2SeqLM,
+    AutoModel,
     AutoTokenizer,
     DataCollatorForSeq2Seq,
     SchedulerType,
@@ -365,14 +366,14 @@ def main():
         )
 
     if args.model_name_or_path:
-        model = AutoModelForSeq2SeqLM.from_pretrained(
+        model = AutoModel.from_pretrained(
             args.model_name_or_path,
             from_tf=bool(".ckpt" in args.model_name_or_path),
             config=config,
         )
     else:
         logger.info("Training new model from scratch")
-        model = AutoModelForSeq2SeqLM.from_config(config)
+        model = AutoModel.from_config(config)
 
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     model.resize_token_embeddings(len(tokenizer))
