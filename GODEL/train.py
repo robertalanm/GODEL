@@ -366,7 +366,7 @@ def main():
         )
 
     if args.model_name_or_path:
-        model = AutoModel.from_pretrained(
+        model = AutoModelForSeq2SeqLM.from_pretrained(
             args.model_name_or_path,
             from_tf=bool(".ckpt" in args.model_name_or_path),
             config=config,
