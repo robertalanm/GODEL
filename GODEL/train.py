@@ -28,6 +28,7 @@ from transformers import (
     CONFIG_MAPPING,
     MODEL_MAPPING,
     AdamW,
+    AutoModel,
     AutoConfig,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
@@ -365,7 +366,7 @@ def main():
         )
 
     if args.model_name_or_path:
-        model = AutoModelForSeq2SeqLM.from_pretrained(
+        model = AutoModel.from_pretrained(
             args.model_name_or_path,
             from_tf=bool(".ckpt" in args.model_name_or_path),
             config=config,
