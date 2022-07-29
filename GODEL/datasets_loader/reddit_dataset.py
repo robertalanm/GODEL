@@ -31,6 +31,8 @@ RedditPretrain
 
 _WEBPAGE = ""
 
+_VERSION = datasets.Version("0.0.1")
+
 
 class RedditPretrain(datasets.GeneratorBasedBuilder):
     """RedditPretrain"""
@@ -47,6 +49,7 @@ class RedditPretrain(datasets.GeneratorBasedBuilder):
             ),
             homepage=_WEBPAGE,
             citation=_CITATION,
+            version=_VERSION,
         )
 
     def _split_generators(self, dl_manager):
