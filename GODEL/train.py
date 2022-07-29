@@ -30,6 +30,7 @@ from transformers import (
     AdamW,
     AutoModel,
     AutoConfig,
+    AutoModelForCausalLM,
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
     DataCollatorForSeq2Seq,
@@ -366,14 +367,14 @@ def main():
         )
 
     if args.model_name_or_path:
-        model = AutoModel.from_pretrained(
+        model = AutoModelForCausalLM.from_pretrained(
             args.model_name_or_path,
             from_tf=bool(".ckpt" in args.model_name_or_path),
             config=config,
         )
     else:
         logger.info("Training new model from scratch")
-        model = AutoModelForSeq2SeqLM.from_config(config)
+        model = AutoModelForCausalLM.from_config(config)
 
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     model.resize_token_embeddings(len(tokenizer))
@@ -447,7 +448,7 @@ def main():
     
     column_names = ['Context','Response','Knowledge']
     lm_datasets = raw_datasets.map(
-        opt_mapping_function,
+        dataset_mapping_function,
         batched=True,
         remove_columns=column_names,
         num_proc=args.preprocessing_num_workers,
