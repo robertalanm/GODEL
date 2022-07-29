@@ -31,7 +31,7 @@ RedditPretrain
 
 _WEBPAGE = ""
 
-_VERSION = datasets.Version("0.0.0")
+_VERSION = datasets.Version("0.2.0")
 
 
 class RedditPretrain(datasets.GeneratorBasedBuilder):
