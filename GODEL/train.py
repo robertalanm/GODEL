@@ -30,7 +30,6 @@ from transformers import (
     AdamW,
     AutoConfig,
     AutoModelForSeq2SeqLM,
-    AutoModel,
     AutoTokenizer,
     DataCollatorForSeq2Seq,
     SchedulerType,
@@ -373,11 +372,10 @@ def main():
         )
     else:
         logger.info("Training new model from scratch")
-        model = AutoModel.from_config(config)
+        model = AutoModelForSeq2SeqLM.from_config(config)
 
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     model.resize_token_embeddings(len(tokenizer))
-    model.config.decoder_start_token_id = 0
     if model.config.decoder_start_token_id is None:
         raise ValueError("Make sure that `config.decoder_start_token_id` is correctly defined")
 
@@ -411,6 +409,33 @@ def main():
         model_inputs["labels"] = labels["labels"]
         return model_inputs
 
+    def opt_mapping_function(examples):
+        contextes = examples['Context']
+        responses = examples['Response']
+        kbs = examples['Knowledge']
+    
+        inputs = []
+        for context, kb, response in zip(contextes, kbs, responses):
+            if args.no_kb:
+                inputs.append(context + ' => ')
+            else:
+                _input = context + ' <|Knowledge|> ' + kb + ' => ' + ' <|Response|> ' + response
+                inputs.append(_input)
+        model_inputs = tokenizer(inputs, max_length=args.max_length, padding=padding, truncation=True)
+
+        # # Setup the tokenizer for targets
+        # with tokenizer.as_target_tokenizer():
+        #     labels = tokenizer(responses, max_length=max_target_length, padding=padding, truncation=True)
+
+        # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
+        # padding in the loss.
+        if padding == "max_length" and args.ignore_pad_token_for_loss:
+            model_inputs["input_ids"] = [
+                [(l if l != tokenizer.pad_token_id else -100) for l in label] for label in model_inputs["input_ids"]
+            ]
+        return model_inputs
+
+
     # Note that with `batched=True`, this map processes 1,000 texts together, so group_texts throws away a remainder
     # for each of those groups of 1,000 texts. You can adjust that batch_size here but a higher value might be slower
     # to preprocess.
@@ -420,7 +445,7 @@ def main():
     
     column_names = ['Context','Response','Knowledge']
     lm_datasets = raw_datasets.map(
-        dataset_mapping_function,
+        opt_mapping_function,
         batched=True,
         remove_columns=column_names,
         num_proc=args.preprocessing_num_workers,

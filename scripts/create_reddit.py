@@ -71,6 +71,29 @@ def process(reddit_path):
 
                 writer.write(example)
 
+    # with open('../data/reddit_session_level.jsonl', "r", encoding="utf-8") as reader:
+    #     writer = jsonlines.open('../data/reddit.jsonl', mode='w')
+    #     for item in jsonlines.Reader(reader):
+    #         idx += 1
+    #         if idx % 10000 == 0:
+    #             print(idx)
+    #         context = item['text'].split('EOS')
+
+    #         for idx in range(0, len(context)-1):
+
+    #             history = 'EOS'.join(context[:idx+1])
+    #             response = context[idx+1]
+
+    #             if len(history) == 0:
+    #                 continue
+
+    #             example = ''
+    #             example += '<Context>' + history + '</Context>' + '\n'
+    #             example += '<Knowledge>' + '' + '</Knowledge>' + '\n'
+    #             example += '<Response>' + response.strip() + '</Response>' + '\n'
+
+    #             writer.write(example)
+
 
 def main():
     fire.Fire(process)
